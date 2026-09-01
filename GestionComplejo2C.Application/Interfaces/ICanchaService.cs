@@ -1,7 +1,7 @@
-using GestionComplejo2C.Presentation.DTOs;
-using GestionComplejo2C.Presentation.Models;
+using GestionComplejo2C.Application.DTOs;
+using GestionComplejo2C.Domain.Entities;
 
-namespace GestionComplejo2C.Presentation.Services
+namespace GestionComplejo2C.Application.Interfaces
 {
     public interface ICanchaService
     {

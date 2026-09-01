@@ -1,3 +1,6 @@
 <Solution>
+  <Project Path="GestionComplejo2C.Application/GestionComplejo2C.Application.csproj" />
+  <Project Path="GestionComplejo2C.Domain/GestionComplejo2C.Domain.csproj" />
+  <Project Path="GestionComplejo2C.Infrastructure/GestionComplejo2C.Infrastructure.csproj" />
   <Project Path="GestionComplejo2C.Presentation/GestionComplejo2C.Presentation.csproj" />
 </Solution>

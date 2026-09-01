@@ -1,23 +1,31 @@
-using GestionComplejo2C.Presentation.Data;
-using GestionComplejo2C.Presentation.DTOs;
-using GestionComplejo2C.Presentation.Models;
+using GestionComplejo2C.Application.DTOs;
+using GestionComplejo2C.Application.Interfaces;
+using GestionComplejo2C.Domain.Entities;
+using GestionComplejo2C.Domain.Interfaces;
 
-namespace GestionComplejo2C.Presentation.Services
+namespace GestionComplejo2C.Application.Services
 {
     public class CanchaService : ICanchaService
     {
+        private readonly IRepositorioCanchas repositorioCanchas;
+
+        public CanchaService(IRepositorioCanchas repositorioCanchas)
+        {
+            this.repositorioCanchas = repositorioCanchas;
+        }
+
         public Cancha Crear(CrearCanchaRequest request)
         {
             var cancha = new Cancha(request.Deporte, request.TipoPiso, request.JugadoresMax, request.PrecioPorHora);
 
-            RepositorioCanchas.Agregar(cancha);
+            repositorioCanchas.Agregar(cancha);
 
             return cancha;
         }
 
-        public IReadOnlyList<Cancha> ObtenerTodas() => RepositorioCanchas.ObtenerTodas();
+        public IReadOnlyList<Cancha> ObtenerTodas() => repositorioCanchas.ObtenerTodas();
 
-        public Cancha? ObtenerPorId(int id) => RepositorioCanchas.ObtenerPorId(id);
+        public Cancha? ObtenerPorId(int id) => repositorioCanchas.ObtenerPorId(id);
 
         public Cancha? ActualizarPrecio(int id, ActualizarPrecioRequest request)
         {
@@ -47,7 +55,7 @@ namespace GestionComplejo2C.Presentation.Services
                 throw new InvalidOperationException($"The court {id} has active bookings");
             }
 
-            if (!RepositorioCanchas.Eliminar(cancha))
+            if (!repositorioCanchas.Eliminar(cancha))
             {
                 throw new InvalidOperationException($"Problem to delete the item {id}");
             }

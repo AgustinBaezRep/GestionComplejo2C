@@ -1,4 +1,4 @@
-namespace GestionComplejo2C.Presentation.DTOs
+namespace GestionComplejo2C.Application.DTOs
 {
     public record ActualizarPrecioRequest(decimal PrecioPorHora);
 }
