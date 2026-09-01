@@ -1,6 +1,6 @@
-using GestionComplejo2C.Presentation.DTOs;
-using GestionComplejo2C.Presentation.Models;
-using GestionComplejo2C.Presentation.Services;
+using GestionComplejo2C.Application.DTOs;
+using GestionComplejo2C.Application.Interfaces;
+using GestionComplejo2C.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestionComplejo2C.Presentation.Controllers

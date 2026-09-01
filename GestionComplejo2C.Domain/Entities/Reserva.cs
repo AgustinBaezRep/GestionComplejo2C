@@ -1,4 +1,4 @@
-namespace GestionComplejo2C.Presentation.Models
+namespace GestionComplejo2C.Domain.Entities
 {
     public class Reserva
     {

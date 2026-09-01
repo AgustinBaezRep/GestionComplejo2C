@@ -1,6 +1,6 @@
-using GestionComplejo2C.Presentation.Data;
-using GestionComplejo2C.Presentation.DTOs;
-using GestionComplejo2C.Presentation.Models;
+using GestionComplejo2C.Application.DTOs;
+using GestionComplejo2C.Application.Interfaces;
+using GestionComplejo2C.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestionComplejo2C.Presentation.Controllers
@@ -9,21 +9,25 @@ namespace GestionComplejo2C.Presentation.Controllers
     [ApiController]
     public class ReservaController : ControllerBase
     {
+        private readonly IReservaService reservaService;
+
+        public ReservaController(IReservaService reservaService)
+        {
+            this.reservaService = reservaService;
+        }
+
         [HttpPost]
         public ActionResult<Reserva> Create([FromRoute] int canchaId, [FromBody] CrearReservaRequest request)
         {
-            var cancha = RepositorioCanchas.ObtenerPorId(canchaId);
-
-            if (cancha == null)
-            {
-                return NotFound($"There is no element that match with the id {canchaId}");
-            }
-
             try
             {
-                var reserva = cancha.Reservar(request.Cliente, request.Inicio, request.Horas);
+                var reserva = reservaService.Crear(canchaId, request);
 
                 return CreatedAtAction(nameof(GetById), new { canchaId, id = reserva.Id }, reserva);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
             catch (ArgumentException ex)
             {
@@ -38,56 +42,51 @@ namespace GestionComplejo2C.Presentation.Controllers
         [HttpGet]
         public ActionResult<IReadOnlyList<Reserva>> GetAll([FromRoute] int canchaId)
         {
-            var cancha = RepositorioCanchas.ObtenerPorId(canchaId);
-
-            if (cancha == null)
+            try
             {
-                return NotFound($"There is no element that match with the id {canchaId}");
+                return Ok(reservaService.ObtenerTodas(canchaId));
             }
-
-            return Ok(cancha.VerHistorial());
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
         }
 
         [HttpGet("{id}")]
         public ActionResult<Reserva> GetById([FromRoute] int canchaId, [FromRoute] Guid id)
         {
-            var cancha = RepositorioCanchas.ObtenerPorId(canchaId);
-
-            if (cancha == null)
+            try
             {
-                return NotFound($"There is no element that match with the id {canchaId}");
+                var reserva = reservaService.ObtenerPorId(canchaId, id);
+
+                if (reserva == null)
+                {
+                    return NotFound($"There is no booking that match with the id {id}");
+                }
+
+                return Ok(reserva);
             }
-
-            var reserva = cancha.ObtenerReserva(id);
-
-            if (reserva == null)
+            catch (KeyNotFoundException ex)
             {
-                return NotFound($"There is no booking that match with the id {id}");
+                return NotFound(ex.Message);
             }
-
-            return Ok(reserva);
         }
 
         [HttpDelete("{id}")]
         public ActionResult Delete([FromRoute] int canchaId, [FromRoute] Guid id)
         {
-            var cancha = RepositorioCanchas.ObtenerPorId(canchaId);
-
-            if (cancha == null)
-            {
-                return NotFound($"There is no element that match with the id {canchaId}");
-            }
-
-            if (cancha.ObtenerReserva(id) == null)
-            {
-                return NotFound($"There is no booking that match with the id {id}");
-            }
-
             try
             {
-                cancha.Cancelar(id);
+                if (!reservaService.Cancelar(canchaId, id))
+                {
+                    return NotFound($"There is no booking that match with the id {id}");
+                }
 
                 return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
             catch (InvalidOperationException ex)
             {

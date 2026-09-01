@@ -1,4 +1,4 @@
-namespace GestionComplejo2C.Presentation.DTOs
+namespace GestionComplejo2C.Application.DTOs
 {
     public record CrearReservaRequest(string Cliente, DateTime Inicio, int Horas);
 }
