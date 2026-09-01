@@ -1,5 +1,9 @@
+using GestionComplejo2C.Presentation.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
+
+builder.Services.AddScoped<ICanchaService, CanchaService>();
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();

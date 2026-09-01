@@ -1,6 +1,6 @@
-using GestionComplejo2C.Presentation.Data;
 using GestionComplejo2C.Presentation.DTOs;
 using GestionComplejo2C.Presentation.Models;
+using GestionComplejo2C.Presentation.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestionComplejo2C.Presentation.Controllers
@@ -9,14 +9,19 @@ namespace GestionComplejo2C.Presentation.Controllers
     [ApiController]
     public class CanchaController : ControllerBase
     {
+        private readonly ICanchaService canchaService;
+
+        public CanchaController(ICanchaService canchaService)
+        {
+            this.canchaService = canchaService;
+        }
+
         [HttpPost]
         public ActionResult<Cancha> Create([FromBody] CrearCanchaRequest request)
         {
             try
             {
-                var cancha = new Cancha(request.Deporte, request.TipoPiso, request.JugadoresMax, request.PrecioPorHora);
-
-                RepositorioCanchas.Agregar(cancha);
+                var cancha = canchaService.Crear(request);
 
                 return CreatedAtAction(nameof(GetById), new { id = cancha.Id }, cancha);
             }
@@ -29,7 +34,7 @@ namespace GestionComplejo2C.Presentation.Controllers
         [HttpGet]
         public ActionResult<IReadOnlyList<Cancha>> GetAll()
         {
-            var canchas = RepositorioCanchas.ObtenerTodas();
+            var canchas = canchaService.ObtenerTodas();
 
             if (!canchas.Any())
             {
@@ -42,7 +47,7 @@ namespace GestionComplejo2C.Presentation.Controllers
         [HttpGet("{id}")]
         public ActionResult<Cancha> GetById([FromRoute] int id)
         {
-            var cancha = RepositorioCanchas.ObtenerPorId(id);
+            var cancha = canchaService.ObtenerPorId(id);
 
             if (cancha == null)
             {
@@ -55,16 +60,14 @@ namespace GestionComplejo2C.Presentation.Controllers
         [HttpPatch("{id}/precio")]
         public ActionResult<Cancha> UpdatePrecio([FromRoute] int id, [FromBody] ActualizarPrecioRequest request)
         {
-            var cancha = RepositorioCanchas.ObtenerPorId(id);
-
-            if (cancha == null)
-            {
-                return NotFound($"There is no element that match with the id {id}");
-            }
-
             try
             {
-                cancha.ActualizarPrecio(request.PrecioPorHora);
+                var cancha = canchaService.ActualizarPrecio(id, request);
+
+                if (cancha == null)
+                {
+                    return NotFound($"There is no element that match with the id {id}");
+                }
 
                 return Ok(cancha);
             }
@@ -77,24 +80,19 @@ namespace GestionComplejo2C.Presentation.Controllers
         [HttpDelete("{id}")]
         public ActionResult Delete([FromRoute] int id)
         {
-            var cancha = RepositorioCanchas.ObtenerPorId(id);
-
-            if (cancha == null)
+            try
             {
-                return NotFound($"There is no element that match with the id {id}");
-            }
+                if (!canchaService.Eliminar(id))
+                {
+                    return NotFound($"There is no element that match with the id {id}");
+                }
 
-            if (cancha.ReservasActivas > 0)
+                return NoContent();
+            }
+            catch (InvalidOperationException ex)
             {
-                return Conflict($"The court {id} has active bookings");
+                return Conflict(ex.Message);
             }
-
-            if (!RepositorioCanchas.Eliminar(cancha))
-            {
-                return Conflict($"Problem to delete the item {id}");
-            }
-
-            return NoContent();
         }
     }
 }
