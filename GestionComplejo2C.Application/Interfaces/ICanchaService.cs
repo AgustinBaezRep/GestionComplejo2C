@@ -9,10 +9,10 @@ namespace GestionComplejo2C.Application.Interfaces
 
         IReadOnlyList<Cancha> ObtenerTodas();
 
-        Cancha? ObtenerPorId(int id);
+        Cancha? ObtenerPorId(Guid id);
 
-        Cancha? ActualizarPrecio(int id, ActualizarPrecioRequest request);
+        Cancha? ActualizarPrecio(Guid id, ActualizarPrecioRequest request);
 
-        bool Eliminar(int id);
+        bool Eliminar(Guid id);
     }
 }

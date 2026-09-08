@@ -45,7 +45,7 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Cancha> GetById([FromRoute] int id)
+        public ActionResult<Cancha> GetById([FromRoute] Guid id)
         {
             var cancha = canchaService.ObtenerPorId(id);
 
@@ -58,7 +58,7 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpPatch("{id}/precio")]
-        public ActionResult<Cancha> UpdatePrecio([FromRoute] int id, [FromBody] ActualizarPrecioRequest request)
+        public ActionResult<Cancha> UpdatePrecio([FromRoute] Guid id, [FromBody] ActualizarPrecioRequest request)
         {
             try
             {
@@ -78,7 +78,7 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult Delete([FromRoute] int id)
+        public ActionResult Delete([FromRoute] Guid id)
         {
             try
             {

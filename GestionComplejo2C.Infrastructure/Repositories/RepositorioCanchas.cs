@@ -1,18 +1,26 @@
 using GestionComplejo2C.Domain.Entities;
 using GestionComplejo2C.Domain.Interfaces;
+using GestionComplejo2C.Infrastructure.Persistence;
 
 namespace GestionComplejo2C.Infrastructure.Repositories
 {
     public class RepositorioCanchas : IRepositorioCanchas
     {
-        private readonly List<Cancha> canchas = new List<Cancha>();
+        private readonly GestionComplejoDbContext context;
 
-        public void Agregar(Cancha cancha) => canchas.Add(cancha);
+        public RepositorioCanchas(GestionComplejoDbContext context)
+        {
+            this.context = context;
+        }
 
-        public IReadOnlyList<Cancha> ObtenerTodas() => canchas.AsReadOnly();
+        public void Agregar(Cancha cancha) => context.Canchas.Add(cancha);
 
-        public Cancha? ObtenerPorId(int id) => canchas.FirstOrDefault(c => c.Id == id);
+        public IReadOnlyList<Cancha> ObtenerTodas() => context.Canchas.ToList();
 
-        public bool Eliminar(Cancha cancha) => canchas.Remove(cancha);
+        public Cancha? ObtenerPorId(Guid id) => context.Canchas.FirstOrDefault(c => c.Id == id);
+
+        public void Eliminar(Cancha cancha) => context.Canchas.Remove(cancha);
+
+        public void GuardarCambios() => context.SaveChanges();
     }
 }

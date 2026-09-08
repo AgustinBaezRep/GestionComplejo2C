@@ -19,15 +19,16 @@ namespace GestionComplejo2C.Application.Services
             var cancha = new Cancha(request.Deporte, request.TipoPiso, request.JugadoresMax, request.PrecioPorHora);
 
             repositorioCanchas.Agregar(cancha);
+            repositorioCanchas.GuardarCambios();
 
             return cancha;
         }
 
         public IReadOnlyList<Cancha> ObtenerTodas() => repositorioCanchas.ObtenerTodas();
 
-        public Cancha? ObtenerPorId(int id) => repositorioCanchas.ObtenerPorId(id);
+        public Cancha? ObtenerPorId(Guid id) => repositorioCanchas.ObtenerPorId(id);
 
-        public Cancha? ActualizarPrecio(int id, ActualizarPrecioRequest request)
+        public Cancha? ActualizarPrecio(Guid id, ActualizarPrecioRequest request)
         {
             var cancha = ObtenerPorId(id);
 
@@ -38,10 +39,12 @@ namespace GestionComplejo2C.Application.Services
 
             cancha.ActualizarPrecio(request.PrecioPorHora);
 
+            repositorioCanchas.GuardarCambios();
+
             return cancha;
         }
 
-        public bool Eliminar(int id)
+        public bool Eliminar(Guid id)
         {
             var cancha = ObtenerPorId(id);
 
@@ -55,10 +58,8 @@ namespace GestionComplejo2C.Application.Services
                 throw new InvalidOperationException($"The court {id} has active bookings");
             }
 
-            if (!repositorioCanchas.Eliminar(cancha))
-            {
-                throw new InvalidOperationException($"Problem to delete the item {id}");
-            }
+            repositorioCanchas.Eliminar(cancha);
+            repositorioCanchas.GuardarCambios();
 
             return true;
         }

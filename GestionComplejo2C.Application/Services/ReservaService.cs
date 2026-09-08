@@ -14,18 +14,22 @@ namespace GestionComplejo2C.Application.Services
             this.repositorioCanchas = repositorioCanchas;
         }
 
-        public Reserva Crear(int canchaId, CrearReservaRequest request)
+        public Reserva Crear(Guid canchaId, CrearReservaRequest request)
         {
             var cancha = ObtenerCancha(canchaId);
 
-            return cancha.Reservar(request.Cliente, request.Inicio, request.Horas);
+            var reserva = cancha.Reservar(request.Cliente, request.Inicio, request.Horas);
+
+            repositorioCanchas.GuardarCambios();
+
+            return reserva;
         }
 
-        public IReadOnlyList<Reserva> ObtenerTodas(int canchaId) => ObtenerCancha(canchaId).VerHistorial();
+        public IReadOnlyList<Reserva> ObtenerTodas(Guid canchaId) => ObtenerCancha(canchaId).VerHistorial();
 
-        public Reserva? ObtenerPorId(int canchaId, Guid id) => ObtenerCancha(canchaId).ObtenerReserva(id);
+        public Reserva? ObtenerPorId(Guid canchaId, Guid id) => ObtenerCancha(canchaId).ObtenerReserva(id);
 
-        public bool Cancelar(int canchaId, Guid id)
+        public bool Cancelar(Guid canchaId, Guid id)
         {
             var cancha = ObtenerCancha(canchaId);
 
@@ -36,10 +40,12 @@ namespace GestionComplejo2C.Application.Services
 
             cancha.Cancelar(id);
 
+            repositorioCanchas.GuardarCambios();
+
             return true;
         }
 
-        private Cancha ObtenerCancha(int canchaId) =>
+        private Cancha ObtenerCancha(Guid canchaId) =>
             repositorioCanchas.ObtenerPorId(canchaId)
                 ?? throw new KeyNotFoundException($"There is no element that match with the id {canchaId}");
     }
