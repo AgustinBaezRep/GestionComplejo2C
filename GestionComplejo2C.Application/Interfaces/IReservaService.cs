@@ -5,12 +5,12 @@ namespace GestionComplejo2C.Application.Interfaces
 {
     public interface IReservaService
     {
-        Reserva Crear(int canchaId, CrearReservaRequest request);
+        Reserva Crear(Guid canchaId, CrearReservaRequest request);
 
-        IReadOnlyList<Reserva> ObtenerTodas(int canchaId);
+        IReadOnlyList<Reserva> ObtenerTodas(Guid canchaId);
 
-        Reserva? ObtenerPorId(int canchaId, Guid id);
+        Reserva? ObtenerPorId(Guid canchaId, Guid id);
 
-        bool Cancelar(int canchaId, Guid id);
+        bool Cancelar(Guid canchaId, Guid id);
     }
 }

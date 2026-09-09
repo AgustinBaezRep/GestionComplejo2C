@@ -8,8 +8,10 @@ namespace GestionComplejo2C.Domain.Interfaces
 
         IReadOnlyList<Cancha> ObtenerTodas();
 
-        Cancha? ObtenerPorId(int id);
+        Cancha? ObtenerPorId(Guid id);
 
-        bool Eliminar(Cancha cancha);
+        void Eliminar(Cancha cancha);
+
+        void GuardarCambios();
     }
 }

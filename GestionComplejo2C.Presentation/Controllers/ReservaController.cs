@@ -17,7 +17,7 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Reserva> Create([FromRoute] int canchaId, [FromBody] CrearReservaRequest request)
+        public ActionResult<Reserva> Create([FromRoute] Guid canchaId, [FromBody] CrearReservaRequest request)
         {
             try
             {
@@ -40,7 +40,7 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IReadOnlyList<Reserva>> GetAll([FromRoute] int canchaId)
+        public ActionResult<IReadOnlyList<Reserva>> GetAll([FromRoute] Guid canchaId)
         {
             try
             {
@@ -53,7 +53,7 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Reserva> GetById([FromRoute] int canchaId, [FromRoute] Guid id)
+        public ActionResult<Reserva> GetById([FromRoute] Guid canchaId, [FromRoute] Guid id)
         {
             try
             {
@@ -73,7 +73,7 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult Delete([FromRoute] int canchaId, [FromRoute] Guid id)
+        public ActionResult Delete([FromRoute] Guid canchaId, [FromRoute] Guid id)
         {
             try
             {

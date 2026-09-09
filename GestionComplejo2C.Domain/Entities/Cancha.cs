@@ -2,17 +2,22 @@ namespace GestionComplejo2C.Domain.Entities
 {
     public class Cancha
     {
-        private static int siguienteId = 1;
         private readonly List<Reserva> reservas = new List<Reserva>();
 
-        public int Id { get; }
-        public string Deporte { get; }
-        public string TipoPiso { get; }
-        public int JugadoresMax { get; }
+        public Guid Id { get; private set; }
+        public string Deporte { get; private set; }
+        public string TipoPiso { get; private set; }
+        public int JugadoresMax { get; private set; }
         public decimal PrecioPorHora { get; private set; }
 
         public decimal Recaudacion => reservas.Where(r => !r.Cancelada).Sum(r => r.Importe);
         public int ReservasActivas => reservas.Count(r => !r.Cancelada);
+
+        private Cancha()
+        {
+            Deporte = string.Empty;
+            TipoPiso = string.Empty;
+        }
 
         public Cancha(string deporte, string tipoPiso, int jugadoresMax, decimal precioPorHora)
         {
@@ -28,7 +33,7 @@ namespace GestionComplejo2C.Domain.Entities
             if (precioPorHora <= 0)
                 throw new ArgumentOutOfRangeException(nameof(precioPorHora), "El precio debe ser mayor a cero.");
 
-            Id = siguienteId++;
+            Id = Guid.NewGuid();
             Deporte = deporte;
             TipoPiso = tipoPiso;
             JugadoresMax = jugadoresMax;
