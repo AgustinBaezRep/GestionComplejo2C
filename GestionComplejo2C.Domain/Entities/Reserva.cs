@@ -4,7 +4,7 @@ namespace GestionComplejo2C.Domain.Entities
     {
         public Guid Id { get; private set; }
         public Guid CanchaId { get; private set; }
-        public string Cliente { get; private set; }
+        public string Cliente { get; private set; } = string.Empty;
         public DateTime Inicio { get; private set; }
         public int Horas { get; private set; }
         public decimal Importe { get; private set; }
@@ -14,7 +14,6 @@ namespace GestionComplejo2C.Domain.Entities
 
         private Reserva()
         {
-            Cliente = string.Empty;
         }
 
         public Reserva(string cliente, DateTime inicio, int horas, decimal importe)

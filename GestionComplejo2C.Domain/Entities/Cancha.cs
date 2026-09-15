@@ -2,21 +2,24 @@ namespace GestionComplejo2C.Domain.Entities
 {
     public class Cancha
     {
-        private readonly List<Reserva> reservas = new List<Reserva>();
-
         public Guid Id { get; private set; }
-        public string Deporte { get; private set; }
-        public string TipoPiso { get; private set; }
+        public string Deporte { get; private set; } = string.Empty;
+        public string TipoPiso { get; private set; } = string.Empty;
         public int JugadoresMax { get; private set; }
         public decimal PrecioPorHora { get; private set; }
 
-        public decimal Recaudacion => reservas.Where(r => !r.Cancelada).Sum(r => r.Importe);
-        public int ReservasActivas => reservas.Count(r => !r.Cancelada);
+        public Guid? VestuarioId { get; private set; }
+        public Vestuario? Vestuario { get; private set; }
+
+        public List<Reserva> Reservas { get; private set; } = new List<Reserva>();
+
+        public List<Servicio> Servicios { get; private set; } = new List<Servicio>();
+
+        public decimal Recaudacion => Reservas.Where(r => !r.Cancelada).Sum(r => r.Importe);
+        public int ReservasActivas => Reservas.Count(r => !r.Cancelada);
 
         private Cancha()
         {
-            Deporte = string.Empty;
-            TipoPiso = string.Empty;
         }
 
         public Cancha(string deporte, string tipoPiso, int jugadoresMax, decimal precioPorHora)
@@ -52,7 +55,7 @@ namespace GestionComplejo2C.Domain.Entities
                 throw new InvalidOperationException("La cancha ya está reservada en ese horario.");
 
             var reserva = new Reserva(cliente, inicio, horas, PrecioPorHora * horas);
-            reservas.Add(reserva);
+            Reservas.Add(reserva);
             return reserva;
         }
 
@@ -75,14 +78,42 @@ namespace GestionComplejo2C.Domain.Entities
             PrecioPorHora = nuevoPrecio;
         }
 
+        public void AsignarVestuario(Vestuario vestuario)
+        {
+            Vestuario = vestuario;
+            VestuarioId = vestuario.Id;
+        }
+
+        public void QuitarVestuario()
+        {
+            Vestuario = null;
+            VestuarioId = null;
+        }
+
+        public void AgregarServicio(Servicio servicio)
+        {
+            if (Servicios.Any(s => s.Id == servicio.Id))
+                throw new InvalidOperationException($"La cancha ya tiene el servicio {servicio.Nombre}.");
+
+            Servicios.Add(servicio);
+        }
+
+        public void QuitarServicio(Guid servicioId)
+        {
+            var servicio = Servicios.FirstOrDefault(s => s.Id == servicioId)
+                ?? throw new InvalidOperationException($"La cancha no tiene el servicio {servicioId}.");
+
+            Servicios.Remove(servicio);
+        }
+
         public bool EstaLibre(DateTime inicio, int horas)
         {
             var fin = inicio.AddHours(horas);
-            return !reservas.Any(r => !r.Cancelada && inicio < r.Fin && fin > r.Inicio);
+            return !Reservas.Any(r => !r.Cancelada && inicio < r.Fin && fin > r.Inicio);
         }
 
-        public Reserva? ObtenerReserva(Guid idReserva) => reservas.FirstOrDefault(r => r.Id == idReserva);
+        public Reserva? ObtenerReserva(Guid idReserva) => Reservas.FirstOrDefault(r => r.Id == idReserva);
 
-        public IReadOnlyList<Reserva> VerHistorial() => reservas.AsReadOnly();
+        public IReadOnlyList<Reserva> VerHistorial() => Reservas.AsReadOnly();
     }
 }

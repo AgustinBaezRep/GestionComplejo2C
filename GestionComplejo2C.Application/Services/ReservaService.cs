@@ -14,20 +14,27 @@ namespace GestionComplejo2C.Application.Services
             this.repositorioCanchas = repositorioCanchas;
         }
 
-        public Reserva Crear(Guid canchaId, CrearReservaRequest request)
+        public ReservaResponse Crear(Guid canchaId, CrearReservaRequest request)
         {
             var cancha = ObtenerCancha(canchaId);
 
             var reserva = cancha.Reservar(request.Cliente, request.Inicio, request.Horas);
 
+            repositorioCanchas.AgregarReserva(reserva);
             repositorioCanchas.GuardarCambios();
 
-            return reserva;
+            return ReservaResponse.Desde(reserva);
         }
 
-        public IReadOnlyList<Reserva> ObtenerTodas(Guid canchaId) => ObtenerCancha(canchaId).VerHistorial();
+        public IReadOnlyList<ReservaResponse> ObtenerTodas(Guid canchaId) =>
+            ObtenerCancha(canchaId).VerHistorial().Select(ReservaResponse.Desde).ToList();
 
-        public Reserva? ObtenerPorId(Guid canchaId, Guid id) => ObtenerCancha(canchaId).ObtenerReserva(id);
+        public ReservaResponse? ObtenerPorId(Guid canchaId, Guid id)
+        {
+            var reserva = ObtenerCancha(canchaId).ObtenerReserva(id);
+
+            return reserva == null ? null : ReservaResponse.Desde(reserva);
+        }
 
         public bool Cancelar(Guid canchaId, Guid id)
         {

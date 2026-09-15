@@ -14,18 +14,8 @@ namespace GestionComplejo2C.Infrastructure.Persistence
 
         public DbSet<Reserva> Reservas => Set<Reserva>();
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
+        public DbSet<Vestuario> Vestuarios => Set<Vestuario>();
 
-            modelBuilder.Entity<Cancha>()
-                .HasMany<Reserva>("reservas")
-                .WithOne()
-                .HasForeignKey(r => r.CanchaId);
-
-            modelBuilder.Entity<Cancha>()
-                .Navigation("reservas")
-                .AutoInclude();
-        }
+        public DbSet<Servicio> Servicios => Set<Servicio>();
     }
 }
