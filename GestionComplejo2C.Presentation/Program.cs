@@ -13,21 +13,25 @@ var connectionString = builder.Configuration.GetConnectionString("GestionComplej
 builder.Services.AddDbContext<GestionComplejoDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-// Infrastructure: la implementacion concreta se elige aca, en el arranque.
 builder.Services.AddScoped<IRepositorioCanchas, RepositorioCanchas>();
+builder.Services.AddScoped<IRepositorioVestuarios, RepositorioVestuarios>();
+builder.Services.AddScoped<IRepositorioServicios, RepositorioServicios>();
 
-// Application: casos de uso.
 builder.Services.AddScoped<ICanchaService, CanchaService>();
 builder.Services.AddScoped<IReservaService, ReservaService>();
+builder.Services.AddScoped<IVestuarioService, VestuarioService>();
+builder.Services.AddScoped<IServicioService, ServicioService>();
 
 builder.Services.AddControllers();
-builder.Services.AddOpenApi();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();

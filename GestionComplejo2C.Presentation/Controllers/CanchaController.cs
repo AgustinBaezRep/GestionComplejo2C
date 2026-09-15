@@ -1,6 +1,5 @@
 using GestionComplejo2C.Application.DTOs;
 using GestionComplejo2C.Application.Interfaces;
-using GestionComplejo2C.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestionComplejo2C.Presentation.Controllers
@@ -17,7 +16,7 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Cancha> Create([FromBody] CrearCanchaRequest request)
+        public ActionResult<CanchaResponse> Create([FromBody] CrearCanchaRequest request)
         {
             try
             {
@@ -32,7 +31,7 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IReadOnlyList<Cancha>> GetAll()
+        public ActionResult<IReadOnlyList<CanchaResponse>> GetAll()
         {
             var canchas = canchaService.ObtenerTodas();
 
@@ -45,7 +44,7 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Cancha> GetById([FromRoute] Guid id)
+        public ActionResult<CanchaResponse> GetById([FromRoute] Guid id)
         {
             var cancha = canchaService.ObtenerPorId(id);
 
@@ -58,7 +57,7 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpPatch("{id}/precio")]
-        public ActionResult<Cancha> UpdatePrecio([FromRoute] Guid id, [FromBody] ActualizarPrecioRequest request)
+        public ActionResult<CanchaResponse> UpdatePrecio([FromRoute] Guid id, [FromBody] ActualizarPrecioRequest request)
         {
             try
             {
@@ -88,6 +87,70 @@ namespace GestionComplejo2C.Presentation.Controllers
                 }
 
                 return NoContent();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ex.Message);
+            }
+        }
+
+        [HttpPut("{id}/vestuario/{vestuarioId}")]
+        public ActionResult<CanchaResponse> AssignVestuario([FromRoute] Guid id, [FromRoute] Guid vestuarioId)
+        {
+            try
+            {
+                return Ok(canchaService.AsignarVestuario(id, vestuarioId));
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ex.Message);
+            }
+        }
+
+        [HttpDelete("{id}/vestuario")]
+        public ActionResult<CanchaResponse> RemoveVestuario([FromRoute] Guid id)
+        {
+            try
+            {
+                return Ok(canchaService.QuitarVestuario(id));
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
+        [HttpPost("{id}/servicios/{servicioId}")]
+        public ActionResult<CanchaResponse> AddServicio([FromRoute] Guid id, [FromRoute] Guid servicioId)
+        {
+            try
+            {
+                return Ok(canchaService.AgregarServicio(id, servicioId));
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Conflict(ex.Message);
+            }
+        }
+
+        [HttpDelete("{id}/servicios/{servicioId}")]
+        public ActionResult<CanchaResponse> RemoveServicio([FromRoute] Guid id, [FromRoute] Guid servicioId)
+        {
+            try
+            {
+                return Ok(canchaService.QuitarServicio(id, servicioId));
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
             catch (InvalidOperationException ex)
             {

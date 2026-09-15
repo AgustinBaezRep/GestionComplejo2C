@@ -1,6 +1,7 @@
 using GestionComplejo2C.Domain.Entities;
 using GestionComplejo2C.Domain.Interfaces;
 using GestionComplejo2C.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace GestionComplejo2C.Infrastructure.Repositories
 {
@@ -15,9 +16,21 @@ namespace GestionComplejo2C.Infrastructure.Repositories
 
         public void Agregar(Cancha cancha) => context.Canchas.Add(cancha);
 
-        public IReadOnlyList<Cancha> ObtenerTodas() => context.Canchas.ToList();
+        public void AgregarReserva(Reserva reserva) => context.Reservas.Add(reserva);
 
-        public Cancha? ObtenerPorId(Guid id) => context.Canchas.FirstOrDefault(c => c.Id == id);
+        public IReadOnlyList<Cancha> ObtenerTodas() =>
+            context.Canchas
+                .Include(c => c.Reservas)
+                .Include(c => c.Vestuario)
+                .Include(c => c.Servicios)
+                .ToList();
+
+        public Cancha? ObtenerPorId(Guid id) =>
+            context.Canchas
+                .Include(c => c.Reservas)
+                .Include(c => c.Vestuario)
+                .Include(c => c.Servicios)
+                .FirstOrDefault(c => c.Id == id);
 
         public void Eliminar(Cancha cancha) => context.Canchas.Remove(cancha);
 

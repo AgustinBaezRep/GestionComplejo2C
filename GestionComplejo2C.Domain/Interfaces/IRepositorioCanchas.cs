@@ -6,6 +6,8 @@ namespace GestionComplejo2C.Domain.Interfaces
     {
         void Agregar(Cancha cancha);
 
+        void AgregarReserva(Reserva reserva);
+
         IReadOnlyList<Cancha> ObtenerTodas();
 
         Cancha? ObtenerPorId(Guid id);

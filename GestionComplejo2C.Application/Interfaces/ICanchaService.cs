@@ -1,18 +1,25 @@
 using GestionComplejo2C.Application.DTOs;
-using GestionComplejo2C.Domain.Entities;
 
 namespace GestionComplejo2C.Application.Interfaces
 {
     public interface ICanchaService
     {
-        Cancha Crear(CrearCanchaRequest request);
+        CanchaResponse Crear(CrearCanchaRequest request);
 
-        IReadOnlyList<Cancha> ObtenerTodas();
+        IReadOnlyList<CanchaResponse> ObtenerTodas();
 
-        Cancha? ObtenerPorId(Guid id);
+        CanchaResponse? ObtenerPorId(Guid id);
 
-        Cancha? ActualizarPrecio(Guid id, ActualizarPrecioRequest request);
+        CanchaResponse? ActualizarPrecio(Guid id, ActualizarPrecioRequest request);
 
         bool Eliminar(Guid id);
+
+        CanchaResponse AsignarVestuario(Guid canchaId, Guid vestuarioId);
+
+        CanchaResponse QuitarVestuario(Guid canchaId);
+
+        CanchaResponse AgregarServicio(Guid canchaId, Guid servicioId);
+
+        CanchaResponse QuitarServicio(Guid canchaId, Guid servicioId);
     }
 }
