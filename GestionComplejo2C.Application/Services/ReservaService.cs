@@ -8,17 +8,22 @@ namespace GestionComplejo2C.Application.Services
     public class ReservaService : IReservaService
     {
         private readonly IRepositorioCanchas repositorioCanchas;
+        private readonly IRepositorioUsuarios repositorioUsuarios;
 
-        public ReservaService(IRepositorioCanchas repositorioCanchas)
+        public ReservaService(IRepositorioCanchas repositorioCanchas, IRepositorioUsuarios repositorioUsuarios)
         {
             this.repositorioCanchas = repositorioCanchas;
+            this.repositorioUsuarios = repositorioUsuarios;
         }
 
         public ReservaResponse Crear(Guid canchaId, CrearReservaRequest request)
         {
             var cancha = ObtenerCancha(canchaId);
 
-            var reserva = cancha.Reservar(request.Cliente, request.Inicio, request.Horas);
+            var cliente = repositorioUsuarios.ObtenerClientePorId(request.ClienteId)
+                ?? throw new KeyNotFoundException($"There is no client that match with the id {request.ClienteId}");
+
+            var reserva = cancha.Reservar(cliente, request.Inicio, request.Horas);
 
             repositorioCanchas.AgregarReserva(reserva);
             repositorioCanchas.GuardarCambios();
