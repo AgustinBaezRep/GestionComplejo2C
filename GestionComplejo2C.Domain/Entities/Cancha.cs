@@ -43,10 +43,9 @@ namespace GestionComplejo2C.Domain.Entities
             PrecioPorHora = precioPorHora;
         }
 
-        public Reserva Reservar(string cliente, DateTime inicio, int horas)
+        public Reserva Reservar(Cliente cliente, DateTime inicio, int horas)
         {
-            if (string.IsNullOrWhiteSpace(cliente))
-                throw new ArgumentException("La reserva necesita un cliente.", nameof(cliente));
+            ArgumentNullException.ThrowIfNull(cliente);
 
             if (horas <= 0)
                 throw new ArgumentOutOfRangeException(nameof(horas), "La reserva debe durar al menos una hora.");

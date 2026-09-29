@@ -5,7 +5,8 @@ namespace GestionComplejo2C.Application.DTOs
     public record ReservaResponse(
         Guid Id,
         Guid CanchaId,
-        string Cliente,
+        Guid ClienteId,
+        string? ClienteEmail,
         DateTime Inicio,
         DateTime Fin,
         int Horas,
@@ -15,7 +16,8 @@ namespace GestionComplejo2C.Application.DTOs
         public static ReservaResponse Desde(Reserva reserva) => new(
             reserva.Id,
             reserva.CanchaId,
-            reserva.Cliente,
+            reserva.ClienteId,
+            reserva.Cliente?.Email,
             reserva.Inicio,
             reserva.Fin,
             reserva.Horas,

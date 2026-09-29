@@ -1,10 +1,12 @@
 using GestionComplejo2C.Application.DTOs;
 using GestionComplejo2C.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestionComplejo2C.Presentation.Controllers
 {
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class VestuarioController : ControllerBase
     {

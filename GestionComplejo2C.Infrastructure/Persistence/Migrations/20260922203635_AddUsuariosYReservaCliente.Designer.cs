@@ -4,6 +4,7 @@ using GestionComplejo2C.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GestionComplejo2C.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(GestionComplejoDbContext))]
-    partial class GestionComplejoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260922203635_AddUsuariosYReservaCliente")]
+    partial class AddUsuariosYReservaCliente
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

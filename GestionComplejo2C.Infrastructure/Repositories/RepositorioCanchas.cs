@@ -20,14 +20,14 @@ namespace GestionComplejo2C.Infrastructure.Repositories
 
         public IReadOnlyList<Cancha> ObtenerTodas() =>
             context.Canchas
-                .Include(c => c.Reservas)
+                .Include(c => c.Reservas).ThenInclude(r => r.Cliente)
                 .Include(c => c.Vestuario)
                 .Include(c => c.Servicios)
                 .ToList();
 
         public Cancha? ObtenerPorId(Guid id) =>
             context.Canchas
-                .Include(c => c.Reservas)
+                .Include(c => c.Reservas).ThenInclude(r => r.Cliente)
                 .Include(c => c.Vestuario)
                 .Include(c => c.Servicios)
                 .FirstOrDefault(c => c.Id == id);
