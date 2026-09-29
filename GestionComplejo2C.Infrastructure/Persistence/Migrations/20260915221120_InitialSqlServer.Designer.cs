@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace GestionComplejo2C.Infrastructure.Persistence.Migrations
 {
-    [DbContext(typeof(GestionComplejoDbContext))]
+    [DbContext(typeof(SportsComplexDbContext))]
     [Migration("20260915221120_InitialSqlServer")]
     partial class InitialSqlServer
     {

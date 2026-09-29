@@ -2,7 +2,7 @@ namespace GestionComplejo2C.Infrastructure.ExternalServices
 {
     public class JwtSettings
     {
-        public const string SeccionConfiguracion = "Jwt";
+        public const string SectionName = "Jwt";
 
         public string Key { get; set; } = string.Empty;
 
@@ -10,6 +10,6 @@ namespace GestionComplejo2C.Infrastructure.ExternalServices
 
         public string Audience { get; set; } = string.Empty;
 
-        public int MinutosDeExpiracion { get; set; } = 60;
+        public int ExpirationMinutes { get; set; } = 60;
     }
 }

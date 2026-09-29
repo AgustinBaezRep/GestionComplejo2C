@@ -9,18 +9,18 @@ namespace GestionComplejo2C.Presentation.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IAutenticacionService autenticacionService;
+        private readonly IAuthService authService;
 
-        public AuthController(IAutenticacionService autenticacionService)
+        public AuthController(IAuthService authService)
         {
-            this.autenticacionService = autenticacionService;
+            this.authService = authService;
         }
 
         [AllowAnonymous]
         [HttpPost("login")]
         public ActionResult<LoginResponse> Login([FromBody] LoginRequest request)
         {
-            var login = autenticacionService.Autenticar(request);
+            var login = authService.Authenticate(request);
 
             if (login == null)
             {
