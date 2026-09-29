@@ -14,33 +14,33 @@ using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("GestionComplejoDb")
-    ?? throw new InvalidOperationException("Falta la connection string 'GestionComplejoDb' en appsettings.json.");
+var connectionString = builder.Configuration.GetConnectionString("SportsComplexDb")
+    ?? throw new InvalidOperationException("Missing connection string 'SportsComplexDb' in appsettings.json.");
 
-builder.Services.AddDbContext<GestionComplejoDbContext>(options =>
+builder.Services.AddDbContext<SportsComplexDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-builder.Services.AddScoped<IRepositorioCanchas, RepositorioCanchas>();
-builder.Services.AddScoped<IRepositorioVestuarios, RepositorioVestuarios>();
-builder.Services.AddScoped<IRepositorioServicios, RepositorioServicios>();
-builder.Services.AddScoped<IRepositorioUsuarios, RepositorioUsuarios>();
+builder.Services.AddScoped<ICourtRepository, CourtRepository>();
+builder.Services.AddScoped<ILockerRoomRepository, LockerRoomRepository>();
+builder.Services.AddScoped<IAmenityRepository, AmenityRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 
-builder.Services.AddScoped<ICanchaService, CanchaService>();
-builder.Services.AddScoped<IReservaService, ReservaService>();
-builder.Services.AddScoped<IVestuarioService, VestuarioService>();
-builder.Services.AddScoped<IServicioService, ServicioService>();
-builder.Services.AddScoped<IAutenticacionService, AutenticacionService>();
-builder.Services.AddScoped<IServicioToken, ServicioTokenJwt>();
-builder.Services.AddScoped<IServicioHashPassword, ServicioHashPasswordBCrypt>();
+builder.Services.AddScoped<ICourtService, CourtService>();
+builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddScoped<ILockerRoomService, LockerRoomService>();
+builder.Services.AddScoped<IAmenityService, AmenityService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<ITokenService, JwtTokenService>();
+builder.Services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
 
-builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSettings.SeccionConfiguracion));
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSettings.SectionName));
 
-var jwtSettings = builder.Configuration.GetSection(JwtSettings.SeccionConfiguracion).Get<JwtSettings>()
-    ?? throw new InvalidOperationException("Falta la seccion 'Jwt' en appsettings.json.");
+var jwtSettings = builder.Configuration.GetSection(JwtSettings.SectionName).Get<JwtSettings>()
+    ?? throw new InvalidOperationException("Missing section 'Jwt' in appsettings.json.");
 
 if (string.IsNullOrWhiteSpace(jwtSettings.Key))
 {
-    throw new InvalidOperationException("Falta la clave 'Jwt:Key' en appsettings.json.");
+    throw new InvalidOperationException("Missing key 'Jwt:Key' in appsettings.json.");
 }
 
 builder.Services
@@ -65,9 +65,9 @@ builder.Services
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy(Politicas.SoloAdministradores, policy => policy.RequireRole(nameof(Administrador)));
+    options.AddPolicy(Policies.AdminsOnly, policy => policy.RequireRole(nameof(Administrator)));
 
-    options.AddPolicy(Politicas.Reservas, policy => policy.RequireRole(nameof(Administrador), nameof(Cliente)));
+    options.AddPolicy(Policies.Bookings, policy => policy.RequireRole(nameof(Administrator), nameof(Customer)));
 });
 
 builder.Services.AddControllers();
@@ -84,9 +84,9 @@ builder.Services.AddSwaggerGen(options =>
         Description = "Pegue aqui el token devuelto por POST /api/auth/login (sin la palabra Bearer)."
     });
 
-    options.AddSecurityRequirement(documento => new OpenApiSecurityRequirement
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
     {
-        [new OpenApiSecuritySchemeReference(JwtBearerDefaults.AuthenticationScheme, documento)] = new List<string>()
+        [new OpenApiSecuritySchemeReference(JwtBearerDefaults.AuthenticationScheme, document)] = new List<string>()
     });
 });
 
