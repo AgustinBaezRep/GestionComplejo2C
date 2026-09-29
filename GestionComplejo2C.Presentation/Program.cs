@@ -1,10 +1,12 @@
 using System.Text;
 using GestionComplejo2C.Application.Interfaces;
 using GestionComplejo2C.Application.Services;
+using GestionComplejo2C.Domain.Entities;
 using GestionComplejo2C.Domain.Interfaces;
 using GestionComplejo2C.Infrastructure.ExternalServices;
 using GestionComplejo2C.Infrastructure.Persistence;
 using GestionComplejo2C.Infrastructure.Repositories;
+using GestionComplejo2C.Presentation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -60,6 +62,13 @@ builder.Services
             ClockSkew = TimeSpan.Zero
         };
     });
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(Politicas.SoloAdministradores, policy => policy.RequireRole(nameof(Administrador)));
+
+    options.AddPolicy(Politicas.Reservas, policy => policy.RequireRole(nameof(Administrador), nameof(Cliente)));
+});
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

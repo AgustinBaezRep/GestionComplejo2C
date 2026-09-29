@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GestionComplejo2C.Presentation.Controllers
 {
     [Route("api/cancha/{canchaId}/reservas")]
-    [Authorize]
+    [Authorize(Policy = Politicas.Reservas)]
     [ApiController]
     public class ReservaController : ControllerBase
     {

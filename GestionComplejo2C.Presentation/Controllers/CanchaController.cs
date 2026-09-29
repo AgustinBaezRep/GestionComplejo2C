@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GestionComplejo2C.Presentation.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize]
+    [Authorize(Policy = Politicas.SoloAdministradores)]
     [ApiController]
     public class CanchaController : ControllerBase
     {
