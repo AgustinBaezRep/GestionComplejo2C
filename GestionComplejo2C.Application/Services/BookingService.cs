@@ -9,21 +9,25 @@ namespace GestionComplejo2C.Application.Services
     {
         private readonly ICourtRepository courtRepository;
         private readonly IUserRepository userRepository;
+        private readonly IWeatherService weatherService;
 
-        public BookingService(ICourtRepository courtRepository, IUserRepository userRepository)
+        public BookingService(ICourtRepository courtRepository, IUserRepository userRepository, IWeatherService weatherService)
         {
             this.courtRepository = courtRepository;
             this.userRepository = userRepository;
+            this.weatherService = weatherService;
         }
 
-        public BookingResponse Create(Guid courtId, CreateBookingRequest request)
+        public async Task<BookingResponse> CreateAsync(Guid courtId, CreateBookingRequest request)
         {
             var court = GetCourt(courtId);
 
             var customer = userRepository.GetCustomerById(request.CustomerId)
                 ?? throw new KeyNotFoundException($"No existe un cliente con el id {request.CustomerId}.");
 
-            var booking = court.Book(customer, request.Start, request.Hours);
+            var isRaining = await weatherService.IsRainingAsync(DateOnly.FromDateTime(request.Start));
+
+            var booking = court.Book(customer, request.Start, request.Hours, isRaining);
 
             courtRepository.AddBooking(booking);
             courtRepository.SaveChanges();

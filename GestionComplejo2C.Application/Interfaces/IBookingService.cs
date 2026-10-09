@@ -4,7 +4,7 @@ namespace GestionComplejo2C.Application.Interfaces
 {
     public interface IBookingService
     {
-        BookingResponse Create(Guid courtId, CreateBookingRequest request);
+        Task<BookingResponse> CreateAsync(Guid courtId, CreateBookingRequest request);
 
         IReadOnlyList<BookingResponse> GetAll(Guid courtId);
 

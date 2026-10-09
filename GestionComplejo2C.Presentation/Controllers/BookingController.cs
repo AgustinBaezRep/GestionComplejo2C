@@ -18,11 +18,11 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpPost]
-        public ActionResult<BookingResponse> Create([FromRoute] Guid courtId, [FromBody] CreateBookingRequest request)
+        public async Task<ActionResult<BookingResponse>> Create([FromRoute] Guid courtId, [FromBody] CreateBookingRequest request)
         {
             try
             {
-                var booking = bookingService.Create(courtId, request);
+                var booking = await bookingService.CreateAsync(courtId, request);
 
                 return CreatedAtAction(nameof(GetById), new { courtId, id = booking.Id }, booking);
             }
@@ -37,6 +37,10 @@ namespace GestionComplejo2C.Presentation.Controllers
             catch (InvalidOperationException ex)
             {
                 return Conflict(ex.Message);
+            }
+            catch (HttpRequestException)
+            {
+                return StatusCode(StatusCodes.Status503ServiceUnavailable, "No se pudo consultar el servicio del clima.");
             }
         }
 
