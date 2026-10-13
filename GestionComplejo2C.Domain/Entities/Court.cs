@@ -43,12 +43,13 @@ namespace GestionComplejo2C.Domain.Entities
             PricePerHour = pricePerHour;
         }
 
-        public Booking Book(Customer customer, DateTime start, int hours)
+        public Booking Book(Customer customer, DateTime start, int hours, bool isRaining)
         {
-            ArgumentNullException.ThrowIfNull(customer);
-
             if (hours <= 0)
                 throw new ArgumentOutOfRangeException(nameof(hours), "La reserva debe durar al menos una hora.");
+
+            if (isRaining)
+                throw new InvalidOperationException($"No se puede reservar porque se pronostica lluvia para el {start:dd/MM/yyyy}.");
 
             if (!IsAvailable(start, hours))
                 throw new InvalidOperationException("La cancha ya está reservada en ese horario.");

@@ -35,6 +35,17 @@ builder.Services.AddScoped<IPasswordHasher, BCryptPasswordHasher>();
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSettings.SectionName));
 
+builder.Services.Configure<WeatherSettings>(builder.Configuration.GetSection(WeatherSettings.SectionName));
+
+var weatherSettings = builder.Configuration.GetSection(WeatherSettings.SectionName).Get<WeatherSettings>()
+    ?? throw new InvalidOperationException("Missing section 'Weather' in appsettings.json.");
+
+builder.Services.AddHttpClient<IWeatherService, OpenMeteoWeatherService>(client =>
+{
+    client.BaseAddress = new Uri(weatherSettings.BaseUrl);
+    client.Timeout = TimeSpan.FromSeconds(10);
+});
+
 var jwtSettings = builder.Configuration.GetSection(JwtSettings.SectionName).Get<JwtSettings>()
     ?? throw new InvalidOperationException("Missing section 'Jwt' in appsettings.json.");
 
