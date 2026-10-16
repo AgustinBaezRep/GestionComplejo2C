@@ -28,7 +28,7 @@ nada y sirve para tres cosas:
 
 - **Organizar:** todo lo del proyecto (App Service, plan, servidor SQL, base) queda junto.
 - **Permisos:** se le puede dar acceso a un compañero sobre el grupo entero.
-- **Borrar todo de una:** eliminar el grupo elimina todo lo que contiene. Ideal al terminar la cursada.
+- **Borrar todo de una:** eliminar el grupo elimina todo lo que contiene.
 
 Cada recurso pertenece a **un solo** grupo, y el grupo tiene una **región** (dónde se guarda su
 metadata). Conviene crear los recursos en la misma región que el grupo.
