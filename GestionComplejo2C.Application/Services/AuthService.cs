@@ -20,10 +20,11 @@ namespace GestionComplejo2C.Application.Services
             this.passwordHasher = passwordHasher;
         }
 
-        public LoginResponse? Authenticate(LoginRequest request)
+        public async Task<LoginResponse?> AuthenticateAsync(LoginRequest request, CancellationToken cancellationToken = default)
         {
-            var user = userRepository.GetByEmail(request.Email);
+            var user = await userRepository.GetByEmailAsync(request.Email, cancellationToken);
 
+            // Verify y GenerateToken quedan sincronicos: son trabajo de CPU, no esperan ninguna E/S.
             if (user == null || !passwordHasher.Verify(request.Password, user.PasswordHash))
             {
                 return null;

@@ -16,18 +16,19 @@ namespace GestionComplejo2C.Infrastructure.Repositories
 
         public void Add(LockerRoom lockerRoom) => context.LockerRooms.Add(lockerRoom);
 
-        public IReadOnlyList<LockerRoom> GetAll() =>
-            context.LockerRooms
+        public async Task<IReadOnlyList<LockerRoom>> GetAllAsync(CancellationToken cancellationToken = default) =>
+            await context.LockerRooms
                 .Include(l => l.Court)
-                .ToList();
+                .ToListAsync(cancellationToken);
 
-        public LockerRoom? GetById(Guid id) =>
+        public Task<LockerRoom?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) =>
             context.LockerRooms
                 .Include(l => l.Court)
-                .FirstOrDefault(l => l.Id == id);
+                .FirstOrDefaultAsync(l => l.Id == id, cancellationToken);
 
         public void Remove(LockerRoom lockerRoom) => context.LockerRooms.Remove(lockerRoom);
 
-        public void SaveChanges() => context.SaveChanges();
+        public Task SaveChangesAsync(CancellationToken cancellationToken = default) =>
+            context.SaveChangesAsync(cancellationToken);
     }
 }

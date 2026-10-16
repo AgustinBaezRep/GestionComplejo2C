@@ -1,6 +1,7 @@
 using GestionComplejo2C.Domain.Entities;
 using GestionComplejo2C.Domain.Interfaces;
 using GestionComplejo2C.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace GestionComplejo2C.Infrastructure.Repositories
 {
@@ -13,10 +14,10 @@ namespace GestionComplejo2C.Infrastructure.Repositories
             this.context = context;
         }
 
-        public User? GetByEmail(string email) =>
-            context.Users.FirstOrDefault(u => u.Email == email);
+        public Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default) =>
+            context.Users.FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
 
-        public Customer? GetCustomerById(Guid id) =>
-            context.Customers.FirstOrDefault(c => c.Id == id);
+        public Task<Customer?> GetCustomerByIdAsync(Guid id, CancellationToken cancellationToken = default) =>
+            context.Customers.FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
     }
 }

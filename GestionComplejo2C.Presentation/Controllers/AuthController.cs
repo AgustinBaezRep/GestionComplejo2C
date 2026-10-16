@@ -18,9 +18,9 @@ namespace GestionComplejo2C.Presentation.Controllers
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public ActionResult<LoginResponse> Login([FromBody] LoginRequest request)
+        public async Task<ActionResult<LoginResponse>> Login([FromBody] LoginRequest request, CancellationToken cancellationToken)
         {
-            var login = authService.Authenticate(request);
+            var login = await authService.AuthenticateAsync(request, cancellationToken);
 
             if (login == null)
             {

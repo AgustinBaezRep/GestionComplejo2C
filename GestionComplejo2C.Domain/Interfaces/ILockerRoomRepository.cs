@@ -6,12 +6,12 @@ namespace GestionComplejo2C.Domain.Interfaces
     {
         void Add(LockerRoom lockerRoom);
 
-        IReadOnlyList<LockerRoom> GetAll();
+        Task<IReadOnlyList<LockerRoom>> GetAllAsync(CancellationToken cancellationToken = default);
 
-        LockerRoom? GetById(Guid id);
+        Task<LockerRoom?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
         void Remove(LockerRoom lockerRoom);
 
-        void SaveChanges();
+        Task SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

@@ -1,6 +1,7 @@
 using GestionComplejo2C.Domain.Entities;
 using GestionComplejo2C.Domain.Interfaces;
 using GestionComplejo2C.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace GestionComplejo2C.Infrastructure.Repositories
 {
@@ -15,12 +16,15 @@ namespace GestionComplejo2C.Infrastructure.Repositories
 
         public void Add(Amenity amenity) => context.Amenities.Add(amenity);
 
-        public IReadOnlyList<Amenity> GetAll() => context.Amenities.ToList();
+        public async Task<IReadOnlyList<Amenity>> GetAllAsync(CancellationToken cancellationToken = default) =>
+            await context.Amenities.ToListAsync(cancellationToken);
 
-        public Amenity? GetById(Guid id) => context.Amenities.FirstOrDefault(a => a.Id == id);
+        public Task<Amenity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) =>
+            context.Amenities.FirstOrDefaultAsync(a => a.Id == id, cancellationToken);
 
         public void Remove(Amenity amenity) => context.Amenities.Remove(amenity);
 
-        public void SaveChanges() => context.SaveChanges();
+        public Task SaveChangesAsync(CancellationToken cancellationToken = default) =>
+            context.SaveChangesAsync(cancellationToken);
     }
 }

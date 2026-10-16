@@ -4,8 +4,8 @@ namespace GestionComplejo2C.Domain.Interfaces
 {
     public interface IUserRepository
     {
-        User? GetByEmail(string email);
+        Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default);
 
-        Customer? GetCustomerById(Guid id);
+        Task<Customer?> GetCustomerByIdAsync(Guid id, CancellationToken cancellationToken = default);
     }
 }

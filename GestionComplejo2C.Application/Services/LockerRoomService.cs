@@ -14,29 +14,33 @@ namespace GestionComplejo2C.Application.Services
             this.lockerRoomRepository = lockerRoomRepository;
         }
 
-        public LockerRoomResponse Create(CreateLockerRoomRequest request)
+        public async Task<LockerRoomResponse> CreateAsync(CreateLockerRoomRequest request, CancellationToken cancellationToken = default)
         {
             var lockerRoom = new LockerRoom(request.Available, request.Showers, request.Capacity);
 
             lockerRoomRepository.Add(lockerRoom);
-            lockerRoomRepository.SaveChanges();
+            await lockerRoomRepository.SaveChangesAsync(cancellationToken);
 
             return LockerRoomResponse.From(lockerRoom);
         }
 
-        public IReadOnlyList<LockerRoomResponse> GetAll() =>
-            lockerRoomRepository.GetAll().Select(LockerRoomResponse.From).ToList();
-
-        public LockerRoomResponse? GetById(Guid id)
+        public async Task<IReadOnlyList<LockerRoomResponse>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            var lockerRoom = lockerRoomRepository.GetById(id);
+            var lockerRooms = await lockerRoomRepository.GetAllAsync(cancellationToken);
+
+            return lockerRooms.Select(LockerRoomResponse.From).ToList();
+        }
+
+        public async Task<LockerRoomResponse?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            var lockerRoom = await lockerRoomRepository.GetByIdAsync(id, cancellationToken);
 
             return lockerRoom == null ? null : LockerRoomResponse.From(lockerRoom);
         }
 
-        public bool Delete(Guid id)
+        public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var lockerRoom = lockerRoomRepository.GetById(id);
+            var lockerRoom = await lockerRoomRepository.GetByIdAsync(id, cancellationToken);
 
             if (lockerRoom == null)
             {
@@ -44,7 +48,7 @@ namespace GestionComplejo2C.Application.Services
             }
 
             lockerRoomRepository.Remove(lockerRoom);
-            lockerRoomRepository.SaveChanges();
+            await lockerRoomRepository.SaveChangesAsync(cancellationToken);
 
             return true;
         }

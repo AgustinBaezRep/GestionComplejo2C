@@ -4,12 +4,12 @@ namespace GestionComplejo2C.Application.Interfaces
 {
     public interface IBookingService
     {
-        Task<BookingResponse> CreateAsync(Guid courtId, CreateBookingRequest request);
+        Task<BookingResponse> CreateAsync(Guid courtId, CreateBookingRequest request, CancellationToken cancellationToken = default);
 
-        IReadOnlyList<BookingResponse> GetAll(Guid courtId);
+        Task<IReadOnlyList<BookingResponse>> GetAllAsync(Guid courtId, CancellationToken cancellationToken = default);
 
-        BookingResponse? GetById(Guid courtId, Guid id);
+        Task<BookingResponse?> GetByIdAsync(Guid courtId, Guid id, CancellationToken cancellationToken = default);
 
-        bool Cancel(Guid courtId, Guid id);
+        Task<bool> CancelAsync(Guid courtId, Guid id, CancellationToken cancellationToken = default);
     }
 }

@@ -4,12 +4,12 @@ namespace GestionComplejo2C.Application.Interfaces
 {
     public interface ILockerRoomService
     {
-        LockerRoomResponse Create(CreateLockerRoomRequest request);
+        Task<LockerRoomResponse> CreateAsync(CreateLockerRoomRequest request, CancellationToken cancellationToken = default);
 
-        IReadOnlyList<LockerRoomResponse> GetAll();
+        Task<IReadOnlyList<LockerRoomResponse>> GetAllAsync(CancellationToken cancellationToken = default);
 
-        LockerRoomResponse? GetById(Guid id);
+        Task<LockerRoomResponse?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
-        bool Delete(Guid id);
+        Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
     }
 }

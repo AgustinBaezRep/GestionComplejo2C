@@ -4,12 +4,12 @@ namespace GestionComplejo2C.Application.Interfaces
 {
     public interface IAmenityService
     {
-        AmenityResponse Create(CreateAmenityRequest request);
+        Task<AmenityResponse> CreateAsync(CreateAmenityRequest request, CancellationToken cancellationToken = default);
 
-        IReadOnlyList<AmenityResponse> GetAll();
+        Task<IReadOnlyList<AmenityResponse>> GetAllAsync(CancellationToken cancellationToken = default);
 
-        AmenityResponse? GetById(Guid id);
+        Task<AmenityResponse?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
-        bool Delete(Guid id);
+        Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
     }
 }

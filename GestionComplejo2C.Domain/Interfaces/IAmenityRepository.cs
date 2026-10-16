@@ -6,12 +6,12 @@ namespace GestionComplejo2C.Domain.Interfaces
     {
         void Add(Amenity amenity);
 
-        IReadOnlyList<Amenity> GetAll();
+        Task<IReadOnlyList<Amenity>> GetAllAsync(CancellationToken cancellationToken = default);
 
-        Amenity? GetById(Guid id);
+        Task<Amenity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
         void Remove(Amenity amenity);
 
-        void SaveChanges();
+        Task SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

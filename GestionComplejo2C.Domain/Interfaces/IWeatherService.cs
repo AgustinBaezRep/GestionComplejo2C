@@ -2,6 +2,6 @@ namespace GestionComplejo2C.Domain.Interfaces
 {
     public interface IWeatherService
     {
-        Task<bool> IsRainingAsync(DateOnly date);
+        Task<bool> IsRainingAsync(DateOnly date, CancellationToken cancellationToken = default);
     }
 }

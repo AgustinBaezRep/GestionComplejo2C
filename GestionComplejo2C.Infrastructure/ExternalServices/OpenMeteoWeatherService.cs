@@ -19,7 +19,7 @@ namespace GestionComplejo2C.Infrastructure.ExternalServices
             this.settings = settings.Value;
         }
 
-        public async Task<bool> IsRainingAsync(DateOnly date)
+        public async Task<bool> IsRainingAsync(DateOnly date, CancellationToken cancellationToken = default)
         {
             // Open-Meteo solo pronostica hasta 16 dias hacia adelante; mas alla no hay datos.
             if (date > DateOnly.FromDateTime(DateTime.Today).AddDays(MaxForecastDays))
@@ -33,7 +33,7 @@ namespace GestionComplejo2C.Infrastructure.ExternalServices
 
             var url = $"v1/forecast?latitude={latitude}&longitude={longitude}&daily=precipitation_sum&timezone=auto&start_date={day}&end_date={day}";
 
-            var response = await httpClient.GetFromJsonAsync<OpenMeteoResponse>(url)
+            var response = await httpClient.GetFromJsonAsync<OpenMeteoResponse>(url, cancellationToken)
                 ?? throw new HttpRequestException("La API del clima no devolvio datos.");
 
             var precipitation = response.Daily?.PrecipitationSum.FirstOrDefault() ?? 0;

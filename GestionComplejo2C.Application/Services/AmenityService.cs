@@ -14,29 +14,33 @@ namespace GestionComplejo2C.Application.Services
             this.amenityRepository = amenityRepository;
         }
 
-        public AmenityResponse Create(CreateAmenityRequest request)
+        public async Task<AmenityResponse> CreateAsync(CreateAmenityRequest request, CancellationToken cancellationToken = default)
         {
             var amenity = new Amenity(request.Name, request.Description, request.Cost);
 
             amenityRepository.Add(amenity);
-            amenityRepository.SaveChanges();
+            await amenityRepository.SaveChangesAsync(cancellationToken);
 
             return AmenityResponse.From(amenity);
         }
 
-        public IReadOnlyList<AmenityResponse> GetAll() =>
-            amenityRepository.GetAll().Select(AmenityResponse.From).ToList();
-
-        public AmenityResponse? GetById(Guid id)
+        public async Task<IReadOnlyList<AmenityResponse>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            var amenity = amenityRepository.GetById(id);
+            var amenities = await amenityRepository.GetAllAsync(cancellationToken);
+
+            return amenities.Select(AmenityResponse.From).ToList();
+        }
+
+        public async Task<AmenityResponse?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            var amenity = await amenityRepository.GetByIdAsync(id, cancellationToken);
 
             return amenity == null ? null : AmenityResponse.From(amenity);
         }
 
-        public bool Delete(Guid id)
+        public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var amenity = amenityRepository.GetById(id);
+            var amenity = await amenityRepository.GetByIdAsync(id, cancellationToken);
 
             if (amenity == null)
             {
@@ -44,7 +48,7 @@ namespace GestionComplejo2C.Application.Services
             }
 
             amenityRepository.Remove(amenity);
-            amenityRepository.SaveChanges();
+            await amenityRepository.SaveChangesAsync(cancellationToken);
 
             return true;
         }

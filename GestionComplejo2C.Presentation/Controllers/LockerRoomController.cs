@@ -18,11 +18,11 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpPost]
-        public ActionResult<LockerRoomResponse> Create([FromBody] CreateLockerRoomRequest request)
+        public async Task<ActionResult<LockerRoomResponse>> Create([FromBody] CreateLockerRoomRequest request, CancellationToken cancellationToken)
         {
             try
             {
-                var lockerRoom = lockerRoomService.Create(request);
+                var lockerRoom = await lockerRoomService.CreateAsync(request, cancellationToken);
 
                 return CreatedAtAction(nameof(GetById), new { id = lockerRoom.Id }, lockerRoom);
             }
@@ -33,9 +33,9 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IReadOnlyList<LockerRoomResponse>> GetAll()
+        public async Task<ActionResult<IReadOnlyList<LockerRoomResponse>>> GetAll(CancellationToken cancellationToken)
         {
-            var lockerRooms = lockerRoomService.GetAll();
+            var lockerRooms = await lockerRoomService.GetAllAsync(cancellationToken);
 
             if (!lockerRooms.Any())
             {
@@ -46,9 +46,9 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<LockerRoomResponse> GetById([FromRoute] Guid id)
+        public async Task<ActionResult<LockerRoomResponse>> GetById([FromRoute] Guid id, CancellationToken cancellationToken)
         {
-            var lockerRoom = lockerRoomService.GetById(id);
+            var lockerRoom = await lockerRoomService.GetByIdAsync(id, cancellationToken);
 
             if (lockerRoom == null)
             {
@@ -59,9 +59,9 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult Delete([FromRoute] Guid id)
+        public async Task<ActionResult> Delete([FromRoute] Guid id, CancellationToken cancellationToken)
         {
-            if (!lockerRoomService.Delete(id))
+            if (!await lockerRoomService.DeleteAsync(id, cancellationToken))
             {
                 return NotFound($"No existe un vestuario con el id {id}.");
             }

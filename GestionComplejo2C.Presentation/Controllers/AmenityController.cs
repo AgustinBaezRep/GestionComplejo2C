@@ -18,11 +18,11 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpPost]
-        public ActionResult<AmenityResponse> Create([FromBody] CreateAmenityRequest request)
+        public async Task<ActionResult<AmenityResponse>> Create([FromBody] CreateAmenityRequest request, CancellationToken cancellationToken)
         {
             try
             {
-                var amenity = amenityService.Create(request);
+                var amenity = await amenityService.CreateAsync(request, cancellationToken);
 
                 return CreatedAtAction(nameof(GetById), new { id = amenity.Id }, amenity);
             }
@@ -33,9 +33,9 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IReadOnlyList<AmenityResponse>> GetAll()
+        public async Task<ActionResult<IReadOnlyList<AmenityResponse>>> GetAll(CancellationToken cancellationToken)
         {
-            var amenities = amenityService.GetAll();
+            var amenities = await amenityService.GetAllAsync(cancellationToken);
 
             if (!amenities.Any())
             {
@@ -46,9 +46,9 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<AmenityResponse> GetById([FromRoute] Guid id)
+        public async Task<ActionResult<AmenityResponse>> GetById([FromRoute] Guid id, CancellationToken cancellationToken)
         {
-            var amenity = amenityService.GetById(id);
+            var amenity = await amenityService.GetByIdAsync(id, cancellationToken);
 
             if (amenity == null)
             {
@@ -59,9 +59,9 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult Delete([FromRoute] Guid id)
+        public async Task<ActionResult> Delete([FromRoute] Guid id, CancellationToken cancellationToken)
         {
-            if (!amenityService.Delete(id))
+            if (!await amenityService.DeleteAsync(id, cancellationToken))
             {
                 return NotFound($"No existe un servicio con el id {id}.");
             }

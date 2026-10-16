@@ -18,22 +18,23 @@ namespace GestionComplejo2C.Infrastructure.Repositories
 
         public void AddBooking(Booking booking) => context.Bookings.Add(booking);
 
-        public IReadOnlyList<Court> GetAll() =>
-            context.Courts
+        public async Task<IReadOnlyList<Court>> GetAllAsync(CancellationToken cancellationToken = default) =>
+            await context.Courts
                 .Include(c => c.Bookings).ThenInclude(b => b.Customer)
                 .Include(c => c.LockerRoom)
                 .Include(c => c.Amenities)
-                .ToList();
+                .ToListAsync(cancellationToken);
 
-        public Court? GetById(Guid id) =>
+        public Task<Court?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) =>
             context.Courts
                 .Include(c => c.Bookings).ThenInclude(b => b.Customer)
                 .Include(c => c.LockerRoom)
                 .Include(c => c.Amenities)
-                .FirstOrDefault(c => c.Id == id);
+                .FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
 
         public void Remove(Court court) => context.Courts.Remove(court);
 
-        public void SaveChanges() => context.SaveChanges();
+        public Task SaveChangesAsync(CancellationToken cancellationToken = default) =>
+            context.SaveChangesAsync(cancellationToken);
     }
 }

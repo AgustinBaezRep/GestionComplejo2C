@@ -4,22 +4,22 @@ namespace GestionComplejo2C.Application.Interfaces
 {
     public interface ICourtService
     {
-        CourtResponse Create(CreateCourtRequest request);
+        Task<CourtResponse> CreateAsync(CreateCourtRequest request, CancellationToken cancellationToken = default);
 
-        IReadOnlyList<CourtResponse> GetAll();
+        Task<IReadOnlyList<CourtResponse>> GetAllAsync(CancellationToken cancellationToken = default);
 
-        CourtResponse? GetById(Guid id);
+        Task<CourtResponse?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
-        CourtResponse? UpdatePrice(Guid id, UpdatePriceRequest request);
+        Task<CourtResponse?> UpdatePriceAsync(Guid id, UpdatePriceRequest request, CancellationToken cancellationToken = default);
 
-        bool Delete(Guid id);
+        Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default);
 
-        CourtResponse AssignLockerRoom(Guid courtId, Guid lockerRoomId);
+        Task<CourtResponse> AssignLockerRoomAsync(Guid courtId, Guid lockerRoomId, CancellationToken cancellationToken = default);
 
-        CourtResponse RemoveLockerRoom(Guid courtId);
+        Task<CourtResponse> RemoveLockerRoomAsync(Guid courtId, CancellationToken cancellationToken = default);
 
-        CourtResponse AddAmenity(Guid courtId, Guid amenityId);
+        Task<CourtResponse> AddAmenityAsync(Guid courtId, Guid amenityId, CancellationToken cancellationToken = default);
 
-        CourtResponse RemoveAmenity(Guid courtId, Guid amenityId);
+        Task<CourtResponse> RemoveAmenityAsync(Guid courtId, Guid amenityId, CancellationToken cancellationToken = default);
     }
 }

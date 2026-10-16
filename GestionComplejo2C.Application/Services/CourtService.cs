@@ -21,29 +21,33 @@ namespace GestionComplejo2C.Application.Services
             this.amenityRepository = amenityRepository;
         }
 
-        public CourtResponse Create(CreateCourtRequest request)
+        public async Task<CourtResponse> CreateAsync(CreateCourtRequest request, CancellationToken cancellationToken = default)
         {
             var court = new Court(request.Sport, request.SurfaceType, request.MaxPlayers, request.PricePerHour);
 
             courtRepository.Add(court);
-            courtRepository.SaveChanges();
+            await courtRepository.SaveChangesAsync(cancellationToken);
 
             return CourtResponse.From(court);
         }
 
-        public IReadOnlyList<CourtResponse> GetAll() =>
-            courtRepository.GetAll().Select(CourtResponse.From).ToList();
-
-        public CourtResponse? GetById(Guid id)
+        public async Task<IReadOnlyList<CourtResponse>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            var court = courtRepository.GetById(id);
+            var courts = await courtRepository.GetAllAsync(cancellationToken);
+
+            return courts.Select(CourtResponse.From).ToList();
+        }
+
+        public async Task<CourtResponse?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            var court = await courtRepository.GetByIdAsync(id, cancellationToken);
 
             return court == null ? null : CourtResponse.From(court);
         }
 
-        public CourtResponse? UpdatePrice(Guid id, UpdatePriceRequest request)
+        public async Task<CourtResponse?> UpdatePriceAsync(Guid id, UpdatePriceRequest request, CancellationToken cancellationToken = default)
         {
-            var court = courtRepository.GetById(id);
+            var court = await courtRepository.GetByIdAsync(id, cancellationToken);
 
             if (court == null)
             {
@@ -52,14 +56,14 @@ namespace GestionComplejo2C.Application.Services
 
             court.UpdatePrice(request.PricePerHour);
 
-            courtRepository.SaveChanges();
+            await courtRepository.SaveChangesAsync(cancellationToken);
 
             return CourtResponse.From(court);
         }
 
-        public bool Delete(Guid id)
+        public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var court = courtRepository.GetById(id);
+            var court = await courtRepository.GetByIdAsync(id, cancellationToken);
 
             if (court == null)
             {
@@ -72,16 +76,16 @@ namespace GestionComplejo2C.Application.Services
             }
 
             courtRepository.Remove(court);
-            courtRepository.SaveChanges();
+            await courtRepository.SaveChangesAsync(cancellationToken);
 
             return true;
         }
 
-        public CourtResponse AssignLockerRoom(Guid courtId, Guid lockerRoomId)
+        public async Task<CourtResponse> AssignLockerRoomAsync(Guid courtId, Guid lockerRoomId, CancellationToken cancellationToken = default)
         {
-            var court = GetCourt(courtId);
+            var court = await GetCourtAsync(courtId, cancellationToken);
 
-            var lockerRoom = lockerRoomRepository.GetById(lockerRoomId)
+            var lockerRoom = await lockerRoomRepository.GetByIdAsync(lockerRoomId, cancellationToken)
                 ?? throw new KeyNotFoundException($"No existe un vestuario con el id {lockerRoomId}.");
 
             if (lockerRoom.Court != null && lockerRoom.Court.Id != courtId)
@@ -91,49 +95,49 @@ namespace GestionComplejo2C.Application.Services
 
             court.AssignLockerRoom(lockerRoom);
 
-            courtRepository.SaveChanges();
+            await courtRepository.SaveChangesAsync(cancellationToken);
 
             return CourtResponse.From(court);
         }
 
-        public CourtResponse RemoveLockerRoom(Guid courtId)
+        public async Task<CourtResponse> RemoveLockerRoomAsync(Guid courtId, CancellationToken cancellationToken = default)
         {
-            var court = GetCourt(courtId);
+            var court = await GetCourtAsync(courtId, cancellationToken);
 
             court.RemoveLockerRoom();
 
-            courtRepository.SaveChanges();
+            await courtRepository.SaveChangesAsync(cancellationToken);
 
             return CourtResponse.From(court);
         }
 
-        public CourtResponse AddAmenity(Guid courtId, Guid amenityId)
+        public async Task<CourtResponse> AddAmenityAsync(Guid courtId, Guid amenityId, CancellationToken cancellationToken = default)
         {
-            var court = GetCourt(courtId);
+            var court = await GetCourtAsync(courtId, cancellationToken);
 
-            var amenity = amenityRepository.GetById(amenityId)
+            var amenity = await amenityRepository.GetByIdAsync(amenityId, cancellationToken)
                 ?? throw new KeyNotFoundException($"No existe un servicio con el id {amenityId}.");
 
             court.AddAmenity(amenity);
 
-            courtRepository.SaveChanges();
+            await courtRepository.SaveChangesAsync(cancellationToken);
 
             return CourtResponse.From(court);
         }
 
-        public CourtResponse RemoveAmenity(Guid courtId, Guid amenityId)
+        public async Task<CourtResponse> RemoveAmenityAsync(Guid courtId, Guid amenityId, CancellationToken cancellationToken = default)
         {
-            var court = GetCourt(courtId);
+            var court = await GetCourtAsync(courtId, cancellationToken);
 
             court.RemoveAmenity(amenityId);
 
-            courtRepository.SaveChanges();
+            await courtRepository.SaveChangesAsync(cancellationToken);
 
             return CourtResponse.From(court);
         }
 
-        private Court GetCourt(Guid courtId) =>
-            courtRepository.GetById(courtId)
+        private async Task<Court> GetCourtAsync(Guid courtId, CancellationToken cancellationToken) =>
+            await courtRepository.GetByIdAsync(courtId, cancellationToken)
                 ?? throw new KeyNotFoundException($"No existe una cancha con el id {courtId}.");
     }
 }

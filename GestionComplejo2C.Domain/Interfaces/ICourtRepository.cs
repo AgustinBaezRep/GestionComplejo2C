@@ -8,12 +8,12 @@ namespace GestionComplejo2C.Domain.Interfaces
 
         void AddBooking(Booking booking);
 
-        IReadOnlyList<Court> GetAll();
+        Task<IReadOnlyList<Court>> GetAllAsync(CancellationToken cancellationToken = default);
 
-        Court? GetById(Guid id);
+        Task<Court?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
         void Remove(Court court);
 
-        void SaveChanges();
+        Task SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

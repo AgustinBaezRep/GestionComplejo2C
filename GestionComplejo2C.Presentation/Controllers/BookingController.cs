@@ -18,11 +18,11 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<BookingResponse>> Create([FromRoute] Guid courtId, [FromBody] CreateBookingRequest request)
+        public async Task<ActionResult<BookingResponse>> Create([FromRoute] Guid courtId, [FromBody] CreateBookingRequest request, CancellationToken cancellationToken)
         {
             try
             {
-                var booking = await bookingService.CreateAsync(courtId, request);
+                var booking = await bookingService.CreateAsync(courtId, request, cancellationToken);
 
                 return CreatedAtAction(nameof(GetById), new { courtId, id = booking.Id }, booking);
             }
@@ -45,11 +45,11 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IReadOnlyList<BookingResponse>> GetAll([FromRoute] Guid courtId)
+        public async Task<ActionResult<IReadOnlyList<BookingResponse>>> GetAll([FromRoute] Guid courtId, CancellationToken cancellationToken)
         {
             try
             {
-                return Ok(bookingService.GetAll(courtId));
+                return Ok(await bookingService.GetAllAsync(courtId, cancellationToken));
             }
             catch (KeyNotFoundException ex)
             {
@@ -58,11 +58,11 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<BookingResponse> GetById([FromRoute] Guid courtId, [FromRoute] Guid id)
+        public async Task<ActionResult<BookingResponse>> GetById([FromRoute] Guid courtId, [FromRoute] Guid id, CancellationToken cancellationToken)
         {
             try
             {
-                var booking = bookingService.GetById(courtId, id);
+                var booking = await bookingService.GetByIdAsync(courtId, id, cancellationToken);
 
                 if (booking == null)
                 {
@@ -78,11 +78,11 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult Delete([FromRoute] Guid courtId, [FromRoute] Guid id)
+        public async Task<ActionResult> Delete([FromRoute] Guid courtId, [FromRoute] Guid id, CancellationToken cancellationToken)
         {
             try
             {
-                if (!bookingService.Cancel(courtId, id))
+                if (!await bookingService.CancelAsync(courtId, id, cancellationToken))
                 {
                     return NotFound($"No existe una reserva con el id {id}.");
                 }

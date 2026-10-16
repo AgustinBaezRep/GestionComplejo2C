@@ -18,11 +18,11 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpPost]
-        public ActionResult<CourtResponse> Create([FromBody] CreateCourtRequest request)
+        public async Task<ActionResult<CourtResponse>> Create([FromBody] CreateCourtRequest request, CancellationToken cancellationToken)
         {
             try
             {
-                var court = courtService.Create(request);
+                var court = await courtService.CreateAsync(request, cancellationToken);
 
                 return CreatedAtAction(nameof(GetById), new { id = court.Id }, court);
             }
@@ -33,9 +33,9 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IReadOnlyList<CourtResponse>> GetAll()
+        public async Task<ActionResult<IReadOnlyList<CourtResponse>>> GetAll(CancellationToken cancellationToken)
         {
-            var courts = courtService.GetAll();
+            var courts = await courtService.GetAllAsync(cancellationToken);
 
             if (!courts.Any())
             {
@@ -46,9 +46,9 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<CourtResponse> GetById([FromRoute] Guid id)
+        public async Task<ActionResult<CourtResponse>> GetById([FromRoute] Guid id, CancellationToken cancellationToken)
         {
-            var court = courtService.GetById(id);
+            var court = await courtService.GetByIdAsync(id, cancellationToken);
 
             if (court == null)
             {
@@ -59,11 +59,11 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpPatch("{id}/price")]
-        public ActionResult<CourtResponse> UpdatePrice([FromRoute] Guid id, [FromBody] UpdatePriceRequest request)
+        public async Task<ActionResult<CourtResponse>> UpdatePrice([FromRoute] Guid id, [FromBody] UpdatePriceRequest request, CancellationToken cancellationToken)
         {
             try
             {
-                var court = courtService.UpdatePrice(id, request);
+                var court = await courtService.UpdatePriceAsync(id, request, cancellationToken);
 
                 if (court == null)
                 {
@@ -79,11 +79,11 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult Delete([FromRoute] Guid id)
+        public async Task<ActionResult> Delete([FromRoute] Guid id, CancellationToken cancellationToken)
         {
             try
             {
-                if (!courtService.Delete(id))
+                if (!await courtService.DeleteAsync(id, cancellationToken))
                 {
                     return NotFound($"No existe una cancha con el id {id}.");
                 }
@@ -97,11 +97,11 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpPut("{id}/locker-room/{lockerRoomId}")]
-        public ActionResult<CourtResponse> AssignLockerRoom([FromRoute] Guid id, [FromRoute] Guid lockerRoomId)
+        public async Task<ActionResult<CourtResponse>> AssignLockerRoom([FromRoute] Guid id, [FromRoute] Guid lockerRoomId, CancellationToken cancellationToken)
         {
             try
             {
-                return Ok(courtService.AssignLockerRoom(id, lockerRoomId));
+                return Ok(await courtService.AssignLockerRoomAsync(id, lockerRoomId, cancellationToken));
             }
             catch (KeyNotFoundException ex)
             {
@@ -114,11 +114,11 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpDelete("{id}/locker-room")]
-        public ActionResult<CourtResponse> RemoveLockerRoom([FromRoute] Guid id)
+        public async Task<ActionResult<CourtResponse>> RemoveLockerRoom([FromRoute] Guid id, CancellationToken cancellationToken)
         {
             try
             {
-                return Ok(courtService.RemoveLockerRoom(id));
+                return Ok(await courtService.RemoveLockerRoomAsync(id, cancellationToken));
             }
             catch (KeyNotFoundException ex)
             {
@@ -127,11 +127,11 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpPost("{id}/amenities/{amenityId}")]
-        public ActionResult<CourtResponse> AddAmenity([FromRoute] Guid id, [FromRoute] Guid amenityId)
+        public async Task<ActionResult<CourtResponse>> AddAmenity([FromRoute] Guid id, [FromRoute] Guid amenityId, CancellationToken cancellationToken)
         {
             try
             {
-                return Ok(courtService.AddAmenity(id, amenityId));
+                return Ok(await courtService.AddAmenityAsync(id, amenityId, cancellationToken));
             }
             catch (KeyNotFoundException ex)
             {
@@ -144,11 +144,11 @@ namespace GestionComplejo2C.Presentation.Controllers
         }
 
         [HttpDelete("{id}/amenities/{amenityId}")]
-        public ActionResult<CourtResponse> RemoveAmenity([FromRoute] Guid id, [FromRoute] Guid amenityId)
+        public async Task<ActionResult<CourtResponse>> RemoveAmenity([FromRoute] Guid id, [FromRoute] Guid amenityId, CancellationToken cancellationToken)
         {
             try
             {
-                return Ok(courtService.RemoveAmenity(id, amenityId));
+                return Ok(await courtService.RemoveAmenityAsync(id, amenityId, cancellationToken));
             }
             catch (KeyNotFoundException ex)
             {
